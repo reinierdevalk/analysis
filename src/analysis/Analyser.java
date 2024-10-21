@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -29,6 +30,7 @@ import tbp.symbols.TabSymbol;
 import tools.ToolBox;
 import tools.music.PitchKeyTools;
 import tools.path.PathTools;
+import tools.text.StringTools;
 
 public class Analyser {
 
@@ -36,21 +38,22 @@ public class Analyser {
 	 * @param args
 	 */
 	public static void main(String[] args) {	
-		List<String> pieces = Arrays.asList(new String[]{
-			"ah_golden_hairs-NEW",
-			"an_aged_dame-II",
-			"as_caesar_wept-II",
-			"blame_i_confess-II",
-			"in_angels_weed-II",
-			"o_lord_bow_down-II",
-			"o_that_we_woeful_wretches-NEW",
-			"quis_me_statim-II",
-			"rejoyce_unto_the_lord-NEW",
-			"sith_death-NEW",
-			"the_lord_is_only_my_support-NEW",
-			"the_man_is_blest-NEW",
-			"while_phoebus-II"
-		});
+		List<String> pieces = new ArrayList<>();
+//		List<String> pieces = Arrays.asList(new String[]{
+//			"ah_golden_hairs-NEW",
+//			"an_aged_dame-II",
+//			"as_caesar_wept-II",
+//			"blame_i_confess-II",
+//			"in_angels_weed-II",
+//			"o_lord_bow_down-II",
+//			"o_that_we_woeful_wretches-NEW",
+//			"quis_me_statim-II",
+//			"rejoyce_unto_the_lord-NEW",
+//			"sith_death-NEW",
+//			"the_lord_is_only_my_support-NEW",
+//			"the_man_is_blest-NEW",
+//			"while_phoebus-II"
+//		});
 
 		// 3vv
 //		pieces = Arrays.asList(new String[]{
@@ -161,12 +164,53 @@ public class Analyser {
 //		path = "F:/research/data/MIDI/bach-inv/thesis/2vv/";
 		path = "F:/research/data/MIDI/bach-inv/thesis/3vv/";
 		
+		// METHOD BEGINS HERE
 		Map<String, String> paths = PathTools.getPaths();
+		
+		if (args.length > 0) {
+			args = args[0].split(",");
+			
+			// NB The same opts and vals must be used in the abtab script
+			List<String> opts = Arrays.asList("-a", "-f");
+//			List<String> trueVals = Arrays.asList("y", "y", "t", "y");
+//			List<AtomicBoolean> optBools = Arrays.asList(
+//				includeOrn, showAsScore, tabOnTop, completeDurations
+//			);
+			// Parse options 
+			for (String s : args) {
+				s = s.trim();
+				String[] spl = s.split(" ");
+				String opt = spl[0];
+				String val = spl[1];
+				if (opt.equals("-f")) {
+					String pieceNoExt = val.substring(0, val.lastIndexOf("."));
+					pieces.add(pieceNoExt);
+				}
+				else {
+					List<String> res = new ArrayList<>();
+					if (val.toLowerCase().equals("vc")) {
+						res = analyseVoiceCrossings(path, pieces, voiceNames);
+					}		
+					else if (val.toLowerCase().equals("vr")) {
+						res = analyseVoiceRanges(path, pieces, voiceNames, asMIDIPitches);
+					}
+					else if (val.toLowerCase().equals("vro")) {
+						res = analyseVoiceRangeOverlap(path, pieces, voicePairNames);
+					}	
+					int ind = opts.indexOf(opt);
+					String trueVal = trueVals.get(ind);
+					optBools.get(ind).set((val.equals(trueVal) ? true : false));
+				}
+			}
+		}
+		
+		
 		// TODO now hardcoded; get all pieces that are in (the given?) inpath
 		pieces = Arrays.asList(new String[]{
 			"T-rore-anchor_che_col"
 		});
 		String model = args[1];
+
 		path = PathTools.getPathString(Arrays.asList(
 			paths.get("POLYPHONIST_PATH"), "out/", model
 		));
@@ -189,16 +233,16 @@ public class Analyser {
 //		List<String> voiceNames = Arrays.asList(new String[]{"0", "1", "2"});
 		List<String> voicePairNames = Arrays.asList(new String[]{"M/C", "C/T", "T/B"});
 		
-		List<String> res = new ArrayList<>();
-		if (analysis.equals("vc")) {
-			res = analyseVoiceCrossings(path, pieces, voiceNames);
-		}		
-		else if (analysis.equals("vr")) {
-			res = analyseVoiceRanges(path, pieces, voiceNames, asMIDIPitches);
-		}
-		else if (analysis.equals("vro")) {
-			res = analyseVoiceRangeOverlap(path, pieces, voicePairNames);
-		}
+//		List<String> res = new ArrayList<>();
+//		if (analysis.toLowerCase().equals("vc")) {
+//			res = analyseVoiceCrossings(path, pieces, voiceNames);
+//		}		
+//		else if (analysis.toLowerCase().equals("vr")) {
+//			res = analyseVoiceRanges(path, pieces, voiceNames, asMIDIPitches);
+//		}
+//		else if (analysis.toLowerCase().equals("vro")) {
+//			res = analyseVoiceRangeOverlap(path, pieces, voicePairNames);
+//		}
 
 		
 		System.out.println(res.get(0));
@@ -516,7 +560,7 @@ public class Analyser {
 
 		// Finalise LaTeX output 
 		String latexTable = 
-			ToolBox.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
+			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
 		// If using pitch names: replace avg values with pitch names 
 		if (!asMIDIPitches) {
 			String avgsAsPitches = avgs[0] + " & ";
@@ -642,7 +686,7 @@ public class Analyser {
 
 		// Finalise LaTeX output 
 		String latexTable = 
-			ToolBox.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
+			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
 
 		// Finalise Python output
 		for (String s : outputPythonPerVoice) {
@@ -778,7 +822,7 @@ public class Analyser {
 
 		// Finalise LaTeX output
 		String latexTable = 
-			ToolBox.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
+			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
 
 		// Finalise Python output
 		for (String s : outputPythonPerVoice) {
