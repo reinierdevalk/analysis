@@ -165,7 +165,8 @@ public class Analyser {
 		path = "F:/research/data/MIDI/bach-inv/thesis/3vv/";
 		
 		// METHOD BEGINS HERE
-		Map<String, String> paths = PathTools.getPaths();
+		boolean dev = args.length == 0 ? true : args[0].equals(String.valueOf(true));
+		Map<String, String> paths = PathTools.getPaths(dev);
 		
 		if (args.length > 0) {
 			args = args[0].split(",");
@@ -212,10 +213,10 @@ public class Analyser {
 		String model = args[1];
 
 		path = PathTools.getPathString(Arrays.asList(
-			paths.get("POLYPHONIST_PATH"), "out/", model
+			paths.get("POLYPHONIST_PATH"), "out", model
 		));
 		String outPath = PathTools.getPathString(Arrays.asList(
-			paths.get("ANALYSER_PATH"), "out/", model
+			paths.get("ANALYSER_PATH"), "out", model
 		));
 
 		Map<String, String> cliArgs = new LinkedHashMap<String, String>();
@@ -281,7 +282,7 @@ public class Analyser {
 //			Transcription transcription = new Transcription(midiFile, encodingFile);
 //			System.out.println(transcription.getVoiceCrossingInformation(tablature));
 //		}
-//		Integer[] result = hasChordsAtGivenDistances(pieceNames);    
+//		Integer[] result = hasChordsAtGivenDistances(paths, pieceNames);    
 //		System.out.println(getDurationsInfo(pieceNames));
 //		System.exit(0);
 
@@ -377,11 +378,10 @@ public class Analyser {
 //		pieceName = "Bach - WTC2, Fuga 21 in Bb major (BWV 890)";
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)/musedata.org/Unedited";
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)";
-	
-//		Map<String, String> paths = PathTools.getPaths();		
-		String p = PathTools.getPathString(Arrays.asList(
-			paths.get("MIDI_PATH"), "bach-WTC", "thesis", "4vv"
-		));
+
+		String p = PathTools.getPathString(
+			Arrays.asList(paths.get("MIDI_PATH"), "bach-WTC", "thesis", "4vv")
+		);
 		folderName = p;
 
 //		pieceName = "Bach - WTC2, Fuga 2 in c minor (BWV 871)/musedata.org/Unedited/";
@@ -1291,7 +1291,8 @@ public class Analyser {
 	 * @param pieceNames
 	 * @return
 	 */
-	private static Integer[] hasChordsAtGivenDistances(List<String> pieceNames) {
+	private static Integer[] hasChordsAtGivenDistances(Map<String, String> paths, 
+		List<String> pieceNames) {
 		Integer[] result = new Integer[33];
 
 		int numberOfChords = 0;
@@ -1299,11 +1300,10 @@ public class Analyser {
 
 		Integer[] chordsBetween = new Integer[32];
 		Arrays.fill(chordsBetween, 0);
-		
-		Map<String, String> paths = PathTools.getPaths();		
-		String path = PathTools.getPathString(Arrays.asList(
-			paths.get("ENCODINGS_PATH")
-		));
+
+		String path = PathTools.getPathString(
+			Arrays.asList(paths.get("ENCODINGS_PATH"))
+		);
 
 		for (int i = 0; i < pieceNames.size(); i++) {
 			String pieceName = pieceNames.get(i);
