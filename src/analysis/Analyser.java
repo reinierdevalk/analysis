@@ -380,7 +380,8 @@ public class Analyser {
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)";
 
 		String p = PathTools.getPathString(
-			Arrays.asList(paths.get("MIDI_PATH"), "bach-WTC", "thesis", "4vv")
+			Arrays.asList(path, "bach-WTC", "thesis", "4vv")	
+//			Arrays.asList(paths.get("MIIDI_PATH"), "bach-WTC", "thesis", "4vv")
 		);
 		folderName = p;
 
@@ -1291,7 +1292,7 @@ public class Analyser {
 	 * @param pieceNames
 	 * @return
 	 */
-	private static Integer[] hasChordsAtGivenDistances(Map<String, String> paths, 
+	private static Integer[] hasChordsAtGivenDistances(/*Map<String, String> paths,*/ String path, 
 		List<String> pieceNames) {
 		Integer[] result = new Integer[33];
 
@@ -1301,9 +1302,9 @@ public class Analyser {
 		Integer[] chordsBetween = new Integer[32];
 		Arrays.fill(chordsBetween, 0);
 
-		String path = PathTools.getPathString(
-			Arrays.asList(paths.get("ENCODINGS_PATH"))
-		);
+//		String path = PathTools.getPathString(
+//			Arrays.asList(paths.get("ENCODINGS_PATH"))
+//		);
 
 		for (int i = 0; i < pieceNames.size(); i++) {
 			String pieceName = pieceNames.get(i);
