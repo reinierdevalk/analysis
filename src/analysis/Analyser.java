@@ -23,13 +23,13 @@ import de.uos.fmt.musitech.utility.math.Rational;
 import conversion.exports.MEIExport;
 import external.Tablature;
 import external.Transcription;
+import interfaces.CLInterface;
 import internal.core.Encoding;
 import internal.structure.ScoreMetricalTimeLine;
 import tools.labels.LabelTools;
 import tbp.symbols.TabSymbol;
 import tools.ToolBox;
 import tools.music.PitchKeyTools;
-import tools.path.PathTools;
 import tools.text.StringTools;
 
 public class Analyser {
@@ -166,12 +166,12 @@ public class Analyser {
 		
 		// METHOD BEGINS HERE
 		boolean dev = args.length == 0 ? true : args[0].equals(String.valueOf(true));
-		Map<String, String> paths = PathTools.getPaths(dev);
+		Map<String, String> paths = CLInterface.getPaths(dev);
 		
 		if (args.length > 0) {
 			args = args[0].split(",");
 			
-			// NB The same opts and vals must be used in the abtab script
+			// As in abtab script TODO make class fields in CLInterface
 			List<String> opts = Arrays.asList("-a", "-f");
 //			List<String> trueVals = Arrays.asList("y", "y", "t", "y");
 //			List<AtomicBoolean> optBools = Arrays.asList(
@@ -212,10 +212,10 @@ public class Analyser {
 		});
 		String model = args[1];
 
-		path = PathTools.getPathString(Arrays.asList(
+		path = CLInterface.getPathString(Arrays.asList(
 			paths.get("POLYPHONIST_PATH"), "out", model
 		));
-		String outPath = PathTools.getPathString(Arrays.asList(
+		String outPath = CLInterface.getPathString(Arrays.asList(
 			paths.get("ANALYSER_PATH"), "out", model
 		));
 
@@ -379,7 +379,7 @@ public class Analyser {
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)/musedata.org/Unedited";
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)";
 
-		String p = PathTools.getPathString(
+		String p = CLInterface.getPathString(
 			Arrays.asList(path, "bach-WTC", "thesis", "4vv")	
 //			Arrays.asList(paths.get("MIIDI_PATH"), "bach-WTC", "thesis", "4vv")
 		);
@@ -551,7 +551,7 @@ public class Analyser {
 			}
 		}
 		String[] avgs = 
-			ToolBox.getAveragesForMixedList(intsToAvg, doublesToAvg, pieces.size(), 2, 5);
+			ToolBox.getAveragesForMixedList(intsToAvg, doublesToAvg, intInds, pieces.size(), 2, 5);
 		// Add values for average over all pieces to Python output
 		for (int i = 1; i < avgs.length; i+=2) {
 			int voice = (i-1)/2;
@@ -561,7 +561,7 @@ public class Analyser {
 
 		// Finalise LaTeX output 
 		String latexTable = 
-			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
+			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, intInds, 2, 5, includeAvg);
 		// If using pitch names: replace avg values with pitch names 
 		if (!asMIDIPitches) {
 			String avgsAsPitches = avgs[0] + " & ";
@@ -678,7 +678,7 @@ public class Analyser {
 				}
 			}
 		}
-		String[] avgs = ToolBox.getAveragesForMixedList(intsToAvg, doublesToAvg, pieces.size(), 2, 5);
+		String[] avgs = ToolBox.getAveragesForMixedList(intsToAvg, doublesToAvg, intInds, pieces.size(), 2, 5);
 		// Add values for average over all pieces to Python output
 		for (int i = 1; i < avgs.length; i++) {
 			int voicePair = i-1;
@@ -687,7 +687,7 @@ public class Analyser {
 
 		// Finalise LaTeX output 
 		String latexTable = 
-			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
+			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, intInds, 2, 5, includeAvg);
 
 		// Finalise Python output
 		for (String s : outputPythonPerVoice) {
@@ -810,7 +810,7 @@ public class Analyser {
 		for (String s : outputPythonPerVoice) {
 			System.out.println(s);
 		}
-		String[] avgs = ToolBox.getAveragesForMixedList(intsToAvg, doublesToAvg, pieces.size(), 2, 5);
+		String[] avgs = ToolBox.getAveragesForMixedList(intsToAvg, doublesToAvg, intInds, pieces.size(), 2, 5);
 		// Add values for average over all pieces to Python output
 		System.out.println(Arrays.toString(avgs));
 		System.out.println(avgs.length);
@@ -823,7 +823,7 @@ public class Analyser {
 
 		// Finalise LaTeX output
 		String latexTable = 
-			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, 2, 5, includeAvg);
+			StringTools.createLaTeXTable(dataArrLaTeX, intsToAvg, doublesToAvg, intInds, 2, 5, includeAvg);
 
 		// Finalise Python output
 		for (String s : outputPythonPerVoice) {
