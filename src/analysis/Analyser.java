@@ -525,7 +525,7 @@ public class Analyser {
 
 		// Create output
 		for (int i = 0; i < pieces.size(); i++) {
-			Transcription trans = new Transcription(new File(path + pieces.get(i) + MIDIImport.EXTENSION));
+			Transcription trans = new Transcription(new File(path + pieces.get(i) + MIDIImport.MID_EXT));
 			String shortName = shortPieceNames.get(i);
 
 			outputSpreadsheet += shortName + "\t";
@@ -635,7 +635,7 @@ public class Analyser {
 
 		// Create output
 		for (int i = 0; i < pieces.size(); i++) {
-			Transcription trans = new Transcription(new File(path + pieces.get(i) + MIDIImport.EXTENSION));
+			Transcription trans = new Transcription(new File(path + pieces.get(i) + MIDIImport.MID_EXT));
 			String shortName = shortPieceNames.get(i); 
 
 			outputSpreadsheet += shortName + "\t";
@@ -761,7 +761,7 @@ public class Analyser {
 
 		// Create output
 		for (int i = 0; i < pieces.size(); i++) {
-			Transcription trans = new Transcription(new File(path + pieces.get(i) + MIDIImport.EXTENSION));
+			Transcription trans = new Transcription(new File(path + pieces.get(i) + MIDIImport.MID_EXT));
 			String shortName = shortPieceNames.get(i);
 
 			outputSpreadsheet += shortName + "\t";
@@ -1309,7 +1309,7 @@ public class Analyser {
 		for (int i = 0; i < pieceNames.size(); i++) {
 			String pieceName = pieceNames.get(i);
 			File tablatureEncoding = 
-				new File(path + pieceName + Encoding.EXTENSION);
+				new File(path + pieceName + Encoding.TBP_EXT);
 
 			Tablature tablature = new Tablature(tablatureEncoding);
 //			Tablature tablature = new Tablature(tablatureEncoding, false);
