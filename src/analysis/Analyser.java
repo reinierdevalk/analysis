@@ -165,7 +165,7 @@ public class Analyser {
 		path = "F:/research/data/MIDI/bach-inv/thesis/3vv/";
 		
 		// METHOD BEGINS HERE
-		boolean dev = args.length == 0 ? true : args[0].equals(String.valueOf(true));
+		boolean dev = args.length == 0 ? true : args[CLInterface.DEV_IND].equals(String.valueOf(true));
 		Map<String, String> paths = CLInterface.getPaths(dev);
 		
 		if (args.length > 0) {
@@ -212,10 +212,10 @@ public class Analyser {
 		});
 		String model = args[1];
 
-		path = CLInterface.getPathString(Arrays.asList(
+		path = StringTools.getPathString(Arrays.asList(
 			paths.get("POLYPHONIST_PATH"), "out", model
 		));
-		String outPath = CLInterface.getPathString(Arrays.asList(
+		String outPath = StringTools.getPathString(Arrays.asList(
 			paths.get("ANALYSER_PATH"), "out", model
 		));
 
@@ -379,7 +379,7 @@ public class Analyser {
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)/musedata.org/Unedited";
 //		pieceName = "Bach - WTC2, Fuga 24 in b minor (BWV 893)";
 
-		String p = CLInterface.getPathString(
+		String p = StringTools.getPathString(
 			Arrays.asList(path, "bach-WTC", "thesis", "4vv")	
 //			Arrays.asList(paths.get("MIIDI_PATH"), "bach-WTC", "thesis", "4vv")
 		);
