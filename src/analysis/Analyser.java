@@ -213,10 +213,10 @@ public class Analyser {
 		String model = args[1];
 
 		path = StringTools.getPathString(Arrays.asList(
-			paths.get("POLYPHONIST_PATH"), "out", model
+			paths.get("POLYPHONIST_PATH"), paths.get("OUT_DIR"), model
 		));
 		String outPath = StringTools.getPathString(Arrays.asList(
-			paths.get("ANALYSER_PATH"), "out", model
+			paths.get("ANALYSER_PATH"), paths.get("OUT_DIR"), model
 		));
 
 		Map<String, String> cliArgs = new LinkedHashMap<String, String>();
